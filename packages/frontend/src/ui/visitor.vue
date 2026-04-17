@@ -3,9 +3,33 @@ SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
+<template>
+<div :class="$style.root">
+	<div v-if="!narrow && !isRoot" :class="$style.side">
+		<div :class="$style.sideBanner" :style="{ backgroundImage: instance.backgroundImageUrl ? `url(${ instance.backgroundImageUrl })` : 'none' }"></div>
+		<div :class="$style.sideDashboard">
+			<MkVisitorDashboard/>
+		</div>
+	</div>
+
+	<div :class="$style.main">
+		<div v-if="narrow && !isRoot" :class="$style.header">
+			<img :src="instance.iconUrl || '/favicon.ico'" alt="" :class="$style.headerIcon"/>
+			<MkA to="/" :class="$style.headerTitle">{{ instanceName }}</MkA>
+			<MkButton primary rounded :class="$style.headerButton" @click="goHome">{{ i18n.ts.signup }}</MkButton>
+		</div>
+		<div :class="$style.content">
+			<RouterView/>
+		</div>
+	</div>
+</div>
+<XCommon/>
+</template>
+
 <script lang="ts" setup>
 import { onMounted, provide, ref, computed } from 'vue';
 import { instanceName } from '@@/js/config.js';
+import XCommon from './_common_/common.vue';
 import type { PageMetadata } from '@/page.js';
 import * as os from '@/os.js';
 import { instance } from '@/instance.js';
